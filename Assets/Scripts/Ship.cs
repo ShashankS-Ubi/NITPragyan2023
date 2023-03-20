@@ -71,6 +71,7 @@ public class Ship : MonoBehaviour
 
         if (other.CompareTag("Enemy"))
         {
+            Destroy(other.gameObject);
             livesLeft -= 1;
             if(livesLeft <= 0)
             {

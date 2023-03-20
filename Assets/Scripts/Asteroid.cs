@@ -5,6 +5,7 @@ using UnityEngine;
 public class Asteroid : MonoBehaviour
 {
     public float speed = 5f;
+    bool IgnoreInitialWallCollision = true;
     Vector3 velocity;
 
     private void Start()
@@ -21,7 +22,14 @@ public class Asteroid : MonoBehaviour
     {
         if (other.CompareTag("wall"))
         {
-            velocity *= -1;
+            if (IgnoreInitialWallCollision)
+            {
+                IgnoreInitialWallCollision = false;
+            }
+            else
+            {
+                velocity *= -1;
+            }
         }
     }
 }
