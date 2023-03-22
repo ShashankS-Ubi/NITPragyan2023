@@ -11,20 +11,28 @@ public class Ship : MonoBehaviour
     public int lives = 3;
     public float fireRate = 1f;
     public GameObject bullet;
+    public ParticleSystem AfterBurnVFX;
 
     float inputX;
     float inputY;
-    int livesLeft;
     float timeSinceLasShot;
     bool fire;
 
     Rigidbody rb;
-    
+
+    private int _lives = 0;
+    private GameManager _manager = null;
+
+    private void Awake()
+    {
+        AfterBurnVFX.Stop();
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        livesLeft = lives;
         timeSinceLasShot = fireRate;
+
+        _manager = GameManager.Instance;
     }
 
     void Update()
@@ -38,6 +46,11 @@ public class Ship : MonoBehaviour
         if (inputY > 0)
         {
             rb.AddForce(transform.forward * thrustForce);
+            AfterBurnVFX.Play();
+        }
+        else
+        {
+            AfterBurnVFX.Stop();
         }
 
         if(inputX < 0)
@@ -71,9 +84,10 @@ public class Ship : MonoBehaviour
 
         if (other.CompareTag("Enemy"))
         {
-            Destroy(other.gameObject);
-            livesLeft -= 1;
-            if(livesLeft <= 0)
+            _manager.SetLives(_manager.Lives - 1);
+            _manager.PlayExplosionVFX(transform.position);
+
+            if (_manager.Lives <= 0)
             {
                 Destroy(this.gameObject);
             }
